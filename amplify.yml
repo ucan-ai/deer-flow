@@ -1,0 +1,41 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd web
+            - corepack enable
+            - pnpm install
+        build:
+          commands:
+            - pnpm run build
+      artifacts:
+        baseDirectory: web/.next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - web/node_modules/**/*
+      customHeaders:
+        - pattern: '**/*'
+          headers:
+            - key: 'Cache-Control'
+              value: 'max-age=0,no-cache,no-store,must-revalidate'
+  - backend:
+      phases:
+        preBuild:
+          commands:
+            - python -m venv venv
+            - source venv/bin/activate
+            - pip install -r requirements.txt
+        build:
+          commands:
+            - python main.py  # Or your actual backend start command
+      artifacts:
+        baseDirectory: .
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - venv/**/*
