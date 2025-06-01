@@ -5,7 +5,7 @@ endpoint = "https://oai0-y4kxawopmmdws.openai.azure.com/"
 model_name = "gpt-4o"
 deployment = "gpt-4o"
 
-subscription_key = "BXh63mpJ4caWGa6FCJ19c2jCJ1ustJpHpv65uR1Kq5c5NcdUypCuJQQJ99BEACHYHv6XJ3w3AAABACOGSmre"
+subscription_key = ""
 api_version = "2024-12-01-preview"
 
 client = AzureOpenAI(
