@@ -1,0 +1,18 @@
+# [!NOTE]
+# Read the `docs/configuration_guide.md` carefully, and update the configurations to match your specific settings and requirements.
+# - Replace `api_key` with your own credentials
+# - Replace `base_url` and `model` name if you want to use a custom model
+
+BASIC_MODEL:
+  base_url: https://api.openai.com/v1/
+  model: "gpt-4o"
+  api_key: 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
+
+
+#BASIC_MODEL:
+ # model: "azure/gpt-4o"
+ # api_base: https://oai0-y4kxawopmmdws.openai.azure.com
+ # api_version: 2024-12-01-preview
+  #api_key: BXh63mpJ4caWGa6FCJ19c2jCJ1ustJpHpv65uR1Kq5c5NcdUypCuJQQJ99BEACHYHv6XJ3w3AAABACOGSmre
+
+

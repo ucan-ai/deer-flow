@@ -16,8 +16,7 @@ venv/
 # Environment variables
 .env
 
-# user conf
-conf.yaml
+
 
 .idea/
 .langgraph_api/

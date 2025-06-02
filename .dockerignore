@@ -39,14 +39,17 @@ npm-debug.log
 *.swp
 *.swo
 
+
 # OS
 .DS_Store
 Thumbs.db
 
 # Project specific
-conf.yaml
 web/
+web/node_modules/
+web/node_modules
 docs/
+web
 examples/
 assets/
 tests/
