@@ -1668,6 +1668,26 @@ The lead agent can spawn sub-agents on the fly — each with its own scoped cont
 
 For file acceptance criteria, an empty regular file in the shared workspace can satisfy `file:<path> exists` and `file_written:<path>`, including on remote sandboxes. It fails `file:<path> non-empty` with a deterministic empty-file result.
 
+To request JSON syntax validation, explicitly set a `task` or `batch_task` item's
+`acceptance_criteria` to `["file:../outputs/report.json json-valid"]`. Checks cover only
+complete UTF-8 JSON files within the shared workspace, up to **50,000 bytes**.
+Valid syntax returns `holds`; empty files, syntax errors, non-UTF-8 content, or
+`NaN`/`Infinity` return `does not hold`. Oversize files, incomplete reads, out-of-scope
+paths, or parser resource limits return `UNVERIFIED`.
+Reads are capped at 50,001 bytes to detect oversize content. Remote results are checked
+for a completion marker, the read exit code, and the probed size. Remote providers lacking
+the required probe tools leave the result unverified rather than falling back to full-content
+reads. Concurrent writes of the same size do not yield an atomic snapshot.
+Local checks authorize sandbox access before resolving paths or probing metadata, and recheck
+before reading content; revoked permissions return `UNVERIFIED` without revealing existence.
+Remote probes report missing files only with a searchable ancestor and in-scope canonical path;
+inaccessible directories remain `UNVERIFIED`. UTF-8 BOMs are rejected. Top-level scalars,
+duplicate keys, and syntactically valid large numbers can pass, without validating schemas,
+fields, or business semantics. Other file criteria are unchanged, and `.json` files are not
+checked automatically. This criterion standardizes verdicts, path boundaries, and read limits
+instead of requiring ad hoc bash/Python checks, and makes insufficient evidence explicit.
+Execution completion status and automatic retry policy are unchanged.
+
 Content-less sub-agent final messages report `No response generated` instead of the literal text `None`. A content-less provider-error fallback reports its structured error detail when available.
 
 An ordinary `task` also receives a defensive snapshot of the dispatching run's current uploads. This lets eligible sub-agents use `list_uploaded_files` to find earlier-turn files without returning same-turn attachments as historical. Delayed or recovered `batch_task` workers leave this tool disabled because they have no valid turn-local upload boundary.
