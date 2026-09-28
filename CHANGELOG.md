@@ -327,6 +327,16 @@ This release closes that milestone with **181 merged pull requests**.
 
 ### Fixed
 
+- **frontend:** The optimistic human bubble keeps its quote and conversation
+  reference chips once a file upload finishes. The upload-complete update
+  replaced the bubble's `additional_kwargs` with only the uploaded files, so
+  those chips disappeared until the server echoed the message; project
+  attachments staged with the send were also missing from the bubble, both
+  while uploading and after. The submitted message was always intact. The
+  optimistic copy (before and after the upload) and the submit now build
+  `additional_kwargs` through one helper,
+  `buildHumanMessageAdditionalKwargs`. ([#5982])
+
 - **scheduler:** Editing an interval task's title or prompt no longer fails with
   a 500. The edit dialog always sends `schedule_spec` beside the changed field,
   and when the cadence is unchanged `PATCH /api/scheduled-tasks/{id}` keeps
@@ -6194,4 +6204,5 @@ with **180 merged pull requests** since the first 2.0 milestone tag.
 [#5945]: https://github.com/bytedance/deer-flow/pull/5945
 [#5964]: https://github.com/bytedance/deer-flow/pull/5964
 [#5981]: https://github.com/bytedance/deer-flow/pull/5981
+[#5982]: https://github.com/bytedance/deer-flow/pull/5982
 
