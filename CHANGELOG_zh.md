@@ -328,6 +328,12 @@
 
 ### 修复
 
+- **调度器：** 修改间隔任务的标题或 prompt 不再返回 500。编辑对话框总是把 `schedule_spec` 与被修改的
+  字段一起发送；当节奏没有变化时，`PATCH /api/scheduled-tasks/{id}` 会沿用任务原有的 `next_run_at`——
+  而这个值是仓储以 ISO 字符串序列化后返回的。`ScheduledTaskRepository.update()` 原样把它赋给
+  `DateTime` 列，于是 SQLite 抛出 `StatementError`（"only accepts Python datetime"），Postgres 抛出
+  `DataError`；只有改变节奏才能成功，因为那条路径会重新计算出 datetime。现在仓储在 `update()` 中
+  会像 `update_after_launch()` 一样，把接收到的所有序列化时间戳转换回来。([#5964])
 - **网关：** `GET /api/skills`、`GET /api/skills/custom` 与 `GET /api/skills/{name}` 不再在事件循环上
   遍历技能目录。三者此前都内联调用 `load_skills()`：它会解析调用者的存储、扫描所有公共与自定义
   技能目录并解析每个 `SKILL.md`，工作量随已安装技能数增长。#5747 已经为自定义技能内容路由把同一
@@ -5246,3 +5252,4 @@ DeerFlow 2.0 是围绕"超级智能体"框架的彻底重写，核心包含子�
 [#5934]: https://github.com/bytedance/deer-flow/pull/5934
 [#5935]: https://github.com/bytedance/deer-flow/pull/5935
 [#5945]: https://github.com/bytedance/deer-flow/pull/5945
+[#5964]: https://github.com/bytedance/deer-flow/pull/5964

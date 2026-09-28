@@ -323,6 +323,16 @@ This release closes that milestone with **181 merged pull requests**.
 
 ### Fixed
 
+- **scheduler:** Editing an interval task's title or prompt no longer fails with
+  a 500. The edit dialog always sends `schedule_spec` beside the changed field,
+  and when the cadence is unchanged `PATCH /api/scheduled-tasks/{id}` keeps
+  the task's existing `next_run_at` — a value the repository had handed back
+  serialized as an ISO string. `ScheduledTaskRepository.update()` assigned it
+  to the `DateTime` column untouched, so SQLite raised `StatementError`
+  ("only accepts Python datetime") and Postgres a `DataError`; only changing
+  the cadence worked, because that path computes a fresh datetime. The
+  repository now coerces every serialized timestamp it accepts in `update()`,
+  as `update_after_launch()` already did. ([#5964])
 - **gateway:** `GET /api/skills`, `GET /api/skills/custom` and
   `GET /api/skills/{name}` no longer walk the skill directories on the event
   loop. Each called `load_skills()` inline, which resolves the caller's
@@ -6178,4 +6188,5 @@ with **180 merged pull requests** since the first 2.0 milestone tag.
 [#5934]: https://github.com/bytedance/deer-flow/pull/5934
 [#5935]: https://github.com/bytedance/deer-flow/pull/5935
 [#5945]: https://github.com/bytedance/deer-flow/pull/5945
+[#5964]: https://github.com/bytedance/deer-flow/pull/5964
 
